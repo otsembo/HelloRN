@@ -1,20 +1,54 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { View } from 'react-native';
+import CreateFruitQuotePage from './ui/CreateFruitQuote';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import FruitQuotesListPage from './ui/FruitQuotesList';
 
-export default function App() {
+const Stack = createNativeStackNavigator();
+
+const App = () => {
+  const [fruitQuotes, setFruitQuotes] = useState([]);
+
+  const handleAddQuote = (quote) => {
+    setFruitQuotes([...fruitQuotes, quote]);
+  };
+
+  console.log("onAddQuote", fruitQuotes)
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    // <NavigationContainer>
+    //   <Stack.Navigator initialRouteName="CreateFruitQuote">
+    //     <Stack.Screen
+    //       name="CreateFruitQuote"
+    //       component={CreateFruitQuotePage}
+    //       options={{ title: 'Create Fruit Quote' }}
+    //       initialParams={{ onAddQuote: handleAddQuote }}
+    //     />
+    //     <Stack.Screen
+    //       name="FruitQuotesList"
+    //       component={FruitQuotesListPage}
+    //       options={{ title: 'Fruit Quotes List' }}
+    //       initialParams={{ fruitQuotes }}
+    //     />
+    //   </Stack.Navigator>
+    // </NavigationContainer>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName='CreateFruitQuote'>
+        <Stack.Screen 
+          name='CreateFruitQuote' 
+          options={{ title: 'Create Fruit Quote' }} 
+        >
+          {(props) => <CreateFruitQuotePage {...props} onAddQuote={handleAddQuote}></CreateFruitQuotePage>}
+        </Stack.Screen>
+        <Stack.Screen
+          name='FruitQuotesList'
+        >
+          { (props) => <FruitQuotesListPage {...props} fruitQuotes={fruitQuotes}></FruitQuotesListPage> }
+        </Stack.Screen>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
